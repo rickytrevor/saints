@@ -1,0 +1,5 @@
+dice
+declama
+esclama
+pensa
+urla

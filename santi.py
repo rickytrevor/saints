@@ -7,7 +7,16 @@ import random
 import flask
 from flask import jsonify, request
 app = flask.Flask(__name__)
- 
+
+resources = {}
+def leggi_files(files_list):
+    for f in files_list:
+        file = open(f+".txt", 'r')
+        resources[f] = file.readlines()
+        file.close()
+def getRandom(contenitore):
+    return resources[contenitore][random.randint(0, len( resources[contenitore])-1)] 
+
 def bestemmia(a):
     print(a)
     #convert a to literal
@@ -30,7 +39,7 @@ def bestemmia(a):
     a = a.replace("\x1f", "")
     a = a.replace("\x7f", "")
     a = a.replace("\x80", "")
-    insulti = ["mannaggia", "bestia", "inutile", "porco/a", "maiale", "canaccio", "cane"]
+    
     today = datetime.today().strftime('%Y-%m-%d')
     if a != "":
         #check if a is a valid date
@@ -45,14 +54,18 @@ def bestemmia(a):
     res = requests.post(url + today, data=payload)
     print(res.json)
     print(res.json()[0]['nome'])
-    mannaggia =  insulti[random.randint(0, len(insulti)-1)] + " " + res.json()[0]['nome'] + "\n" 
-    mannaggia.replace("", "\\")
-    return mannaggia
+    
+    nome = res.json()[0]['nome']
+    bestemmia = getRandom('incipit')+" "+ getRandom('oggetto')+" di "+ nome+" "+getRandom('verbi')+" "+getRandom('bestemmie')+" a "+getRandom('persone')+" "+getRandom('insulti')
+    
+    bestemmia.replace("", "\\")
+    return bestemmia
 
 
-
+leggi_files(['incipit', 'bestemmie', 'imperativi', 'insulti', 'oggetto','persone', 'verbi'])
 @app.route('/api/bestemmia', methods=['GET'])
 def api_id():
+    
     # Check if an ID was provided as part of the URL.
     # If ID is provided, assign it to a variable.
     # If no ID is provided, display an error in the browser.
