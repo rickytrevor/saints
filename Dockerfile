@@ -7,4 +7,4 @@ RUN pip3 install flask
 COPY . /src
 WORKDIR /src
 
-CMD python3 santi.py
+CMD flask run --host 0.0.0.0
